@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 namespace chain
 {
-    public class MarkleRoot
+    public class MarkleTree
     {
-        public byte[] root;
-        public MarkleRoot(List<Transaction> transactions)
+        private byte[] root;
+        public MarkleTree(List<Transaction> transactions)
         {
             Transactions = transactions;
             root=GetRoot();

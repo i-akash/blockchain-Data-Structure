@@ -6,35 +6,49 @@ using System.Text;
 namespace chain{
     public class Block:IBlock
     {
-        public MarkleRoot markleTree;
-
-        public Block()
+        public Block(int index,DateTime datetime,byte[] prevHash,byte[] blockHash,byte[] markleRoot,List<Transaction> transactions,int difficultylevel,int nonce)
         {
-        }
-
-        public Block(byte[] prevHash,List<Transaction> transactions,DateTime datetime,int difficulty_level,int nonce,int index)
-        {
+            // header
+            Index=index;
+            Datetime = datetime;
             PrevHash = prevHash;
-
+            BlockHash= blockHash;
+            
             // transactions
             Transactions = transactions;
-            markleTree=new MarkleRoot(transactions);
-            MarkleRoot = markleTree.root;
+            MarkleRoot = markleRoot;
             
-            
-            Datetime = datetime;
-            Difficulty_Level = difficulty_level;
+            DifficultyLevel = difficultylevel;
             Nonce = nonce;
-            BlockHash=getHash();
+            
+        }
+        public Block(int index,DateTime datetime,byte[] prevHash,List<Transaction> transactions,int difficultyLevel,int nonce)
+        {
             Index=index;
+            Datetime = datetime;
+            PrevHash = prevHash;
+            
+            // transactions
+            Transactions = transactions;
+            MarkleTree markleTree=new MarkleTree(transactions);
+            MarkleRoot = markleTree.Root;
+            
+            
+            DifficultyLevel = difficultyLevel;
+            Nonce = nonce;
+
+
+
+            BlockHash=getHash();
+            
         }
 
-        public byte[] PrevHash { get; }
+        public byte[] PrevHash { get;set; }
         public List<Transaction> Transactions { get; }
         public byte[] BlockHash { get; }
-        public byte[] MarkleRoot { get; }
+        public byte[] MarkleRoot { get;set; }
         public DateTime Datetime { get; }
-        public int Difficulty_Level { get; }
+        public int DifficultyLevel { get; }
         public int Nonce { get;set; }
 
         public int Index {get;set;}
@@ -48,16 +62,65 @@ namespace chain{
             return hashValue;
         }
 
-        public bool IsValid(byte[] prevHash,byte[] blockhash)
-        {
-            if(prevHash.SequenceEqual(PrevHash)==true && blockhash.SequenceEqual(BlockHash)){
+        public bool IsValid(byte[] prevHash)
+        { 
+            Block recentBlock=this;
+            recentBlock.PrevHash=prevHash;
+            recentBlock.MarkleRoot=new MarkleTree(recentBlock.Transactions).Root;
+
+            if(recentBlock.getHash().SequenceEqual(BlockHash)){
                 return true;
             }
             return false;
         }
 
+        public void PrintBlock(IBlock prevBlock)
+        {
+            Console.ForegroundColor=ConsoleColor.Blue;
+                Console.WriteLine($"Block        {Index}");
+
+            if(IsValid(prevBlock.BlockHash))
+                Console.ForegroundColor=ConsoleColor.Green;
+            else 
+                Console.ForegroundColor=ConsoleColor.Red;
+                
+            
+            Console.WriteLine($"Date Time    {Datetime}");
+            Console.Write("Prev Hash    ");
+            foreach (var byteValue in PrevHash)
+            {
+                Console.Write(byteValue);    
+            }
+            Console.WriteLine();
+
+            Console.Write("Block Hash    ");
+            foreach (var byteValue in BlockHash)
+            {
+                Console.Write(byteValue);    
+            }
+            Console.WriteLine();
+
+            Console.Write("Markle Root   ");
+            foreach (var byteValue in MarkleRoot)
+            {
+                Console.Write(byteValue);    
+            }
+            Console.WriteLine();
+
+            Console.WriteLine($"Level     {DifficultyLevel}");
+            Console.WriteLine($"Nonce     {Nonce}");
+
+            foreach (var transaction in Transactions)
+            {
+                Console.WriteLine($"f: {transaction.From} - t: {transaction.To} - am: {transaction.Amount} - d: {transaction.Date}");
+            }
+
+            Console.WriteLine();
+            Console.ResetColor();
+        }
+
         public override string ToString(){
-            return Datetime.ToString()+Difficulty_Level.ToString()+Nonce.ToString()+Index.ToString();
+            return Datetime.ToString()+DifficultyLevel.ToString()+Nonce.ToString()+Index.ToString();
         }
     }
 }

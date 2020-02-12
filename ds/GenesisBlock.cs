@@ -5,25 +5,29 @@ using System.Text;
 namespace chain{
     public class GenesisBlock:IBlock
     {
+        public GenesisBlock()
+        {
+        }
+
         public GenesisBlock(DateTime datetime)
         {
             PrevHash = new byte[]{};
             MarkleRoot = new byte[]{};
             Datetime = datetime;
-            Difficulty_Level = 0;
+            DifficultyLevel = 0;
             Nonce = 0;
             BlockHash=getHash();
             Index=0;
             
         }
 
-        public byte[] PrevHash {get;}
+        public byte[] PrevHash {get;set;}
         public byte[] BlockHash { get; }
-        public byte[] MarkleRoot {get;}
+        public byte[] MarkleRoot {get;set;}
 
         public DateTime Datetime {get;}
 
-        public int Difficulty_Level {get;}
+        public int DifficultyLevel {get;}
 
         public int Nonce { get;set;}
 
@@ -39,13 +43,48 @@ namespace chain{
             return hashValue;
         }
 
-        public bool IsValid(byte[] prevHash, byte[] blockHash)
+        public bool IsValid(byte[] prevHash)
         {
             return true;
         }
 
+        public void PrintBlock(IBlock prevBlock)
+        {
+            Console.ForegroundColor=ConsoleColor.Blue;
+                Console.WriteLine($"Block        {Index}");
+
+            Console.ForegroundColor=ConsoleColor.Green;
+                
+            
+            Console.WriteLine($"Date Time    {Datetime}");
+            Console.Write("Prev Hash    ");
+            foreach (var byteValue in PrevHash)
+            {
+                Console.Write(byteValue);    
+            }
+            Console.WriteLine();
+
+            Console.Write("Block Hash    ");
+            foreach (var byteValue in BlockHash)
+            {
+                Console.Write(byteValue);    
+            }
+            Console.WriteLine();
+
+            Console.Write("Markle Root   ");
+            foreach (var byteValue in MarkleRoot)
+            {
+                Console.Write(byteValue);    
+            }
+            Console.WriteLine();
+
+            Console.WriteLine($"Level     {DifficultyLevel}");
+            Console.WriteLine($"Nonce     {Nonce}");
+            Console.WriteLine();
+        }
+
         public override string ToString(){
-            return Datetime.ToString()+Difficulty_Level.ToString()+Nonce.ToString()+Index.ToString();
+            return Datetime.ToString()+DifficultyLevel.ToString()+Nonce.ToString()+Index.ToString();
         }
     }
 }
