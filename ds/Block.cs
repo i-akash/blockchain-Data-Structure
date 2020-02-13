@@ -30,97 +30,60 @@ namespace chain{
             
             // transactions
             Transactions = transactions;
-            MarkleTree markleTree=new MarkleTree(transactions);
-            MarkleRoot = markleTree.Root;
-            
-            
             DifficultyLevel = difficultyLevel;
             Nonce = nonce;
 
 
-
-            BlockHash=getHash();
+            Sync();
             
         }
 
-        public byte[] PrevHash { get;set; }
-        public List<Transaction> Transactions { get; }
-        public byte[] BlockHash { get; }
-        public byte[] MarkleRoot { get;set; }
+
+        public int Index {get;set;}
+        public byte[] PrevHash {get;set; }
+        public byte[] BlockHash {get;set;}
+        public byte[] MarkleRoot {get;set;}
         public DateTime Datetime { get; }
+        public List<Transaction> Transactions { get; }
         public int DifficultyLevel { get; }
         public int Nonce { get;set; }
 
-        public int Index {get;set;}
+        public bool Sync(){
+            MarkleTree markleTree=new MarkleTree(Transactions);
+            MarkleRoot=markleTree.Root;
 
-        public byte[] getHash(){
-            byte[] repBytes=Encoding.UTF8.GetBytes(ToString());
-            byte[] midMerged=MarkleRoot.Union(repBytes).ToArray();
-            byte[] merged=PrevHash.Union(midMerged).ToArray();
-
-            byte[] hashValue=Hash.ComputeSha256(merged);
-            return hashValue;
+            BlockHash=GetHash();
+            return true;
         }
 
         public bool IsValid(byte[] prevHash)
         { 
-            Block recentBlock=this;
-            recentBlock.PrevHash=prevHash;
-            recentBlock.MarkleRoot=new MarkleTree(recentBlock.Transactions).Root;
-
-            if(recentBlock.getHash().SequenceEqual(BlockHash)){
+            string hexString=ConverterSuit.ByteArrayToHex(BlockHash);
+            if(prevHash.SequenceEqual(PrevHash) && hexString.Substring(0,DifficultyLevel).Equals(new string('0',DifficultyLevel))){
                 return true;
             }
             return false;
         }
 
-        public void PrintBlock(IBlock prevBlock)
-        {
-            Console.ForegroundColor=ConsoleColor.Blue;
-                Console.WriteLine($"Block        {Index}");
 
-            if(IsValid(prevBlock.BlockHash))
-                Console.ForegroundColor=ConsoleColor.Green;
-            else 
-                Console.ForegroundColor=ConsoleColor.Red;
-                
+        public byte[] GetHash(){
+            string stringValue=ToString();
+            byte[] repBytes=Encoding.UTF8.GetBytes(stringValue);
+            IEnumerable<byte> merged=repBytes.Concat(MarkleRoot).Concat(PrevHash);
             
-            Console.WriteLine($"Date Time    {Datetime}");
-            Console.Write("Prev Hash    ");
-            foreach (var byteValue in PrevHash)
-            {
-                Console.Write(byteValue);    
-            }
-            Console.WriteLine();
-
-            Console.Write("Block Hash    ");
-            foreach (var byteValue in BlockHash)
-            {
-                Console.Write(byteValue);    
-            }
-            Console.WriteLine();
-
-            Console.Write("Markle Root   ");
-            foreach (var byteValue in MarkleRoot)
-            {
-                Console.Write(byteValue);    
-            }
-            Console.WriteLine();
-
-            Console.WriteLine($"Level     {DifficultyLevel}");
-            Console.WriteLine($"Nonce     {Nonce}");
-
-            foreach (var transaction in Transactions)
-            {
-                Console.WriteLine($"f: {transaction.From} - t: {transaction.To} - am: {transaction.Amount} - d: {transaction.Date}");
-            }
-
-            Console.WriteLine();
-            Console.ResetColor();
+            byte[] hashValue=HashSuit.ComputeSha256(merged.ToArray());
+            return hashValue;
         }
 
         public override string ToString(){
-            return Datetime.ToString()+DifficultyLevel.ToString()+Nonce.ToString()+Index.ToString();
+            return Index.ToString()+Datetime.ToString()+DifficultyLevel.ToString()+Nonce.ToString();
         }
+
+        public void PrintBlock()
+        {
+            ConsoleGui.ShowBlock(this);
+        }
+
+       
     }
 }

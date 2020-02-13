@@ -25,7 +25,7 @@ namespace chain
                 var left=leaves.Dequeue();
                 var right=leaves.Dequeue();
                 var merged=left.Union(right).ToArray();
-                var parent=Hash.ComputeSha256(merged);
+                var parent=HashSuit.ComputeSha256(merged);
                 leaves.Enqueue(parent);
             }
 

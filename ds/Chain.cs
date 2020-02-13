@@ -39,7 +39,9 @@ namespace chain
             Console.WriteLine(BlockChain.Count);
             foreach (var block in BlockChain)
             {
-                block.PrintBlock(prevBlock);
+                // if(block.IsValid(prevBlock.BlockHash))
+                
+                block.PrintBlock();
                 prevBlock=block;
             }
         }

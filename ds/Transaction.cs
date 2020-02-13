@@ -4,7 +4,7 @@ namespace chain
 {
     public class Transaction
     {
-        public Transaction(string from,string to,float amount, DateTime date)
+        public Transaction(string from,string to,double amount, DateTime date)
         {
             From = from;
             To = to;
@@ -14,12 +14,12 @@ namespace chain
 
         public string From { get; }
         public string To { get; }
-        public float Amount { get; }
+        public double Amount { get; }
         public DateTime Date { get; }
 
         public byte[] GetHash(){
             byte[] repBytes=Encoding.UTF8.GetBytes(ToString());
-            byte[] hashValue=Hash.ComputeSha256(repBytes);
+            byte[] hashValue=HashSuit.ComputeSha256(repBytes);
             return hashValue;
         }
 

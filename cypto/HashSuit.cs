@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 
 namespace chain{
-    public class Hash 
+    public class HashSuit 
     {
         public static byte[] ComputeSha256(byte[] plainBytes){
             SHA256 sha256=SHA256.Create();

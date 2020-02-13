@@ -1,0 +1,16 @@
+// byte[] bytes1=new byte[]{1,2};
+// byte[] bytes2=block2.BlockHash;
+
+// byte[] bytes3=bytes1.Concat(bytes2).ToArray();
+
+
+// int Index=0;
+// DateTime Datetime=DateTime.UtcNow;
+// int DifficultyLevel=4;
+// int Nonce=10101;
+// string txt1=Index.ToString()+DifficultyLevel.ToString()+Nonce.ToString();
+// Nonce=11111;
+// string txt2=Index.ToString()+DifficultyLevel.ToString()+Nonce.ToString();
+
+// Console.WriteLine(ConverterSuit.ByteArrayToHex(Hash.ComputeSha256(Encoding.UTF8.GetBytes(txt1))));
+// Console.WriteLine(ConverterSuit.ByteArrayToHex(Hash.ComputeSha256(Encoding.UTF8.GetBytes(txt2))));
