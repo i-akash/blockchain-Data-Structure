@@ -4,7 +4,43 @@ namespace chain
 {
     public class ConsoleGui
     {
-        
+        // INPUT
+        public static string InputString(){
+            return Console.ReadLine();
+        }    
+
+        public static int InputInt32(){
+            return Convert.ToInt32(Console.ReadLine());
+        }    
+
+
+        public static Int64 InputInt64(){
+            return Convert.ToInt64(Console.ReadLine());
+        }    
+
+
+        public static double InputDouble(){
+            return Convert.ToDouble(Console.ReadLine());
+        }    
+
+        // OUTPUT
+        public static bool ShowHelp(){
+            Console.ForegroundColor=ConsoleColor.DarkRed;
+            return true;
+        }
+
+        public static bool GetPermission(string message){
+            ConsoleGui.ShowMessage(message+" No=0  Yes=1?");   
+            if(ConsoleGui.InputInt32()==0)
+                return false;
+            return true;
+        }
+        public static bool ShowPointer(){
+            Console.ForegroundColor=ConsoleColor.DarkRed;
+            Console.Write("↳ ");
+            Console.ResetColor();
+            return true;
+        } 
         public static bool ShowMessage(string message){
             Console.ForegroundColor=ConsoleColor.Red;
             Console.WriteLine(message);

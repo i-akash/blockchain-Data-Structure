@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 namespace chain
@@ -28,7 +29,9 @@ namespace chain
                 var parent=HashSuit.ComputeSha256(merged);
                 leaves.Enqueue(parent);
             }
-
+            if(leaves.Count==0)
+                leaves.Enqueue(HashSuit.ComputeSha256(new byte[]{10,20}));
+                
             return leaves.Dequeue();
         }
 
